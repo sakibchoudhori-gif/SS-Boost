@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Stats from './components/Stats';
-import ServicesGrid from './components/ServicesGrid';
-import AiStrategyTool from './components/AiStrategyTool';
 import Footer from './components/Footer';
 import SplitAuth from './components/SplitAuth';
 import Dashboard from './components/Dashboard';
@@ -90,8 +88,6 @@ const App: React.FC = () => {
         <main>
           <Hero onSignup={openSignup} />
           <Stats />
-          <ServicesGrid />
-          <AiStrategyTool />
         </main>
         <Footer />
       </div>
