@@ -33,20 +33,16 @@ const Hero: React.FC<HeroProps> = ({ onSignup }) => {
             GET STARTED NOW
           </button>
           <button 
-            onClick={() => document.getElementById('services-grid')?.scrollIntoView({behavior: 'smooth'})}
+            onClick={() => document.getElementById('stats-section')?.scrollIntoView({behavior: 'smooth'})}
             className="w-full sm:w-auto px-10 py-5 border border-white/10 hover:border-cyan-400/50 hover:bg-cyan-400/5 text-lg font-bold rounded-full transition-all"
           >
-            VIEW SERVICES
+            OUR IMPACT
           </button>
         </div>
 
-        {/* Floating Icons Background (Optional Visual) */}
-        <div className="mt-20 w-full relative h-16 flex items-center justify-center opacity-30 gap-8 md:gap-16">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="IG" className="h-8 md:h-10 grayscale hover:grayscale-0 transition-all cursor-crosshair" />
-          <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/2022_TikTok_logo.svg" alt="TT" className="h-8 md:h-10 invert grayscale hover:grayscale-0 transition-all cursor-crosshair" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.svg" alt="YT" className="h-8 md:h-10 grayscale hover:grayscale-0 transition-all cursor-crosshair" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png" alt="FB" className="h-8 md:h-10 grayscale hover:grayscale-0 transition-all cursor-crosshair" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg" alt="X" className="h-8 md:h-10 invert grayscale hover:grayscale-0 transition-all cursor-crosshair" />
+        {/* Floating Icons Background - Only Instagram Kept */}
+        <div className="mt-20 w-full relative h-16 flex items-center justify-center opacity-30">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" className="h-10 md:h-12 grayscale hover:grayscale-0 transition-all cursor-crosshair hover:scale-110" />
         </div>
       </div>
     </section>
