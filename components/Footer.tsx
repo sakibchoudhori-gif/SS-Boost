@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Services</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">API Docs</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Child Panels</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Bulk Order</a></li>
+              <li><button onClick={() => alert('To open Admin Panel: Signup/Login with username "admin"')} className="text-gray-400 hover:text-red-500 transition-colors">Admin Access</button></li>
             </ul>
           </div>
 
