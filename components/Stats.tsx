@@ -16,7 +16,7 @@ const StatCard: React.FC<StatCardProps> = ({ label, value, highlight }) => (
 
 const Stats: React.FC = () => {
   return (
-    <section className="py-20 px-6">
+    <section id="stats-section" className="py-20 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard label="Total Orders" value="2.4M+" />
