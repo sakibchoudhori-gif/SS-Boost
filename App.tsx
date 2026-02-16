@@ -8,6 +8,7 @@ import AiStrategyTool from './components/AiStrategyTool';
 import Footer from './components/Footer';
 import SplitAuth from './components/SplitAuth';
 import Dashboard from './components/Dashboard';
+import AdminPanel from './components/AdminPanel';
 import LoadingScreen from './components/LoadingScreen';
 
 const App: React.FC = () => {
@@ -65,8 +66,12 @@ const App: React.FC = () => {
     );
   }
 
-  // Ager moto: If user is logged in, show Dashboard only.
+  // If user is logged in
   if (user) {
+    // Check if user is admin
+    if (user.username.toLowerCase() === 'admin') {
+      return <AdminPanel user={user} onLogout={handleLogout} />;
+    }
     return <Dashboard user={user} onLogout={handleLogout} />;
   }
 
@@ -91,7 +96,6 @@ const App: React.FC = () => {
         <Footer />
       </div>
 
-      {/* Floating WhatsApp UI only (Ager moto) */}
       <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end gap-4">
         <a 
           href="https://wa.me/yournumber" 
