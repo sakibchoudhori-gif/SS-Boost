@@ -17,7 +17,7 @@ const servicesList = [
 
 const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'bkash' | 'nagad' | null>(null);
   const [amount, setAmount] = useState('');
   const [trxId, setTrxId] = useState('');
@@ -26,12 +26,17 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
   const [orders, setOrders] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
 
-  // New Order State
+  // Form states
   const [selectedServiceId, setSelectedServiceId] = useState<number>(servicesList[0].id);
   const [orderLink, setOrderLink] = useState('');
   const [orderQuantity, setOrderQuantity] = useState<number>(100);
 
-  // Sync Data
+  useEffect(() => {
+    if (window.innerWidth >= 1024) {
+      setSidebarOpen(true);
+    }
+  }, []);
+
   useEffect(() => {
     const syncData = () => {
       const users = JSON.parse(localStorage.getItem('smm_users') || '[]');
@@ -53,6 +58,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
     const interval = setInterval(syncData, 3000);
     return () => clearInterval(interval);
   }, [user.username]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+  };
 
   const handleCopy = () => {
     const inviteCode = user.username || 'user';
@@ -138,7 +150,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
     { id: 'new-order', label: 'New Order', icon: (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>) },
     { id: 'orders', label: 'Orders History', icon: (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>) },
     { id: 'add-funds', label: 'Add Funds', icon: (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>) },
-    { id: 'transactions', label: 'Transactions', icon: (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>) },
+    { id: 'transactions', label: 'Transactions', icon: (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1.707.293l5.414 5.414a1 1 .293.707V19a2 2 0 01-2 2z" /></svg>) },
     { id: 'refer-earn', label: 'Refer & Earn', icon: (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" /></svg>) },
     { id: 'profile', label: 'My Profile', icon: (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>) },
   ];
@@ -149,7 +161,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
       <div className="relative p-8 flex flex-col gap-2">
         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">{title}</span>
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-black text-white group-hover:text-cyan-400 transition-colors">{prefix} {value}</span>
+          <span className="text-2xl md:text-3xl font-black text-white group-hover:text-cyan-400 transition-colors">{prefix} {value}</span>
           {subValue && <span className="text-xs text-green-400 font-bold">+{subValue}%</span>}
         </div>
         <div className="mt-4 w-full h-1 bg-white/5 rounded-full overflow-hidden">
@@ -160,13 +172,23 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
   );
 
   return (
-    <div className="min-h-screen bg-[#000000] text-white flex overflow-hidden">
+    <div className="min-h-screen bg-[#000000] text-white flex overflow-hidden relative">
+      {/* Backdrop for Mobile Sidebar */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[15] lg:hidden transition-opacity duration-300"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
       {/* Sidebar */}
-      <aside className={`bg-black border-r border-white/5 flex flex-col fixed h-full z-20 transition-all duration-500 ease-in-out ${sidebarOpen ? 'w-72' : 'w-20'}`}>
+      <aside className={`bg-black border-r border-white/5 flex flex-col fixed h-full z-20 transition-all duration-500 ease-in-out shadow-2xl lg:shadow-none 
+        ${sidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0 w-20'}`}>
+        
         <div className="p-8 flex items-center gap-3">
           <div className="w-10 h-10 shrink-0 bg-cyan-gradient rounded-xl flex items-center justify-center text-black font-black text-lg shadow-[0_0_20px_rgba(0,255,255,0.3)]">SD</div>
-          {sidebarOpen && (
-            <div className="flex flex-col animate-in fade-in duration-500">
+          {(sidebarOpen || window.innerWidth >= 1024) && (
+            <div className={`flex flex-col transition-opacity duration-300 ${!sidebarOpen && 'lg:opacity-0'}`}>
               <span className="font-black text-xl tracking-tighter leading-none">DOMINATE</span>
               <span className="text-[10px] font-bold text-cyan-400 tracking-[0.3em] uppercase opacity-80">SaaS Elite</span>
             </div>
@@ -177,43 +199,51 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
           {menuItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => handleTabChange(item.id)}
               className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all text-sm font-bold group ${
                 activeTab === item.id ? 'bg-cyan-400/10 text-cyan-400 border border-cyan-400/20 shadow-[0_0_15px_rgba(0,255,255,0.1)]' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
-              } ${!sidebarOpen && 'justify-center'}`}
+              } ${(!sidebarOpen && window.innerWidth < 1024) ? 'justify-center' : ''}`}
             >
               <span className={`transition-transform group-hover:scale-110 shrink-0 ${activeTab === item.id ? 'text-cyan-400' : 'text-gray-600'}`}>{item.icon}</span>
-              {sidebarOpen && <span className="animate-in fade-in duration-300">{item.label}</span>}
+              {(sidebarOpen || window.innerWidth >= 1024) && (
+                <span className={`animate-in fade-in duration-300 ${!sidebarOpen && 'lg:hidden'}`}>{item.label}</span>
+              )}
             </button>
           ))}
         </nav>
 
         <div className="p-6">
-          <button onClick={onLogout} className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-red-500/60 hover:text-red-500 transition-all text-sm font-black uppercase tracking-widest ${!sidebarOpen && 'justify-center'}`}>
+          <button onClick={onLogout} className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-red-500/60 hover:text-red-500 transition-all text-sm font-black uppercase tracking-widest ${(!sidebarOpen && window.innerWidth < 1024) ? 'justify-center' : ''}`}>
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-            {sidebarOpen && <span>Logout</span>}
+            {(sidebarOpen || window.innerWidth >= 1024) && <span className={`${!sidebarOpen && 'lg:hidden'}`}>Logout</span>}
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 min-h-screen bg-black relative p-8 md:p-12 overflow-y-auto transition-all duration-500 ${sidebarOpen ? 'ml-72' : 'ml-20'}`}>
+      <main className={`flex-1 min-h-screen bg-black relative p-8 md:p-12 overflow-y-auto transition-all duration-500 
+        ${sidebarOpen ? 'lg:ml-72' : 'lg:ml-20 ml-0'}`}>
         <div className="fixed top-[-20%] right-[-10%] w-[50%] h-[50%] bg-cyan-900/10 blur-[150px] rounded-full pointer-events-none"></div>
 
         {/* Header */}
         <div className="flex items-center justify-between mb-12">
           <div className="flex items-center gap-6">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-400/10 text-cyan-400">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+            <button 
+              onClick={() => setSidebarOpen(!sidebarOpen)} 
+              className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-cyan-400/10 text-cyan-400 active:scale-95 transition-all"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
-            <div>
-              <h1 className="text-4xl font-black tracking-tighter mb-2 uppercase">
+            <div className="overflow-hidden">
+              <h1 className="text-2xl md:text-4xl font-black tracking-tighter mb-2 uppercase truncate">
                 {activeTab === 'dashboard' ? `HELLO, ${user.username || 'CAPTAIN'}` : menuItems.find(i => i.id === activeTab)?.label}
               </h1>
               <p className="text-gray-500 font-medium tracking-widest text-[10px] uppercase">Nexus Sync v4.2 Active</p>
             </div>
           </div>
-          <div className="w-14 h-14 rounded-3xl bg-cyan-gradient p-px overflow-hidden shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+          <div className="w-14 h-14 shrink-0 rounded-3xl bg-cyan-gradient p-px overflow-hidden shadow-[0_0_20px_rgba(0,255,255,0.2)]">
             <div className="w-full h-full bg-black rounded-[inherit] flex items-center justify-center text-xl font-black text-cyan-400">
               {user.username?.[0]?.toUpperCase() || 'U'}
             </div>
@@ -261,12 +291,12 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Destination URL</label>
                    <input type="url" value={orderLink} onChange={(e) => setOrderLink(e.target.value)} placeholder="https://..." className="w-full bg-black border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-cyan-400 text-white font-bold" required />
                  </div>
-                 <div className="bg-cyan-400/5 border border-cyan-400/20 rounded-3xl p-8 flex items-center justify-between">
-                    <div>
+                 <div className="bg-cyan-400/5 border border-cyan-400/20 rounded-3xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div className="text-center sm:text-left">
                       <p className="text-[10px] font-black text-cyan-400 uppercase mb-1 tracking-widest">Total Charge</p>
                       <p className="text-4xl font-black text-white">৳ {calculatedCharge}</p>
                     </div>
-                    <button type="submit" className="px-12 py-5 bg-cyan-gradient text-black font-black rounded-2xl cyan-glow uppercase text-sm">PLACE ORDER</button>
+                    <button type="submit" className="w-full sm:w-auto px-12 py-5 bg-cyan-gradient text-black font-black rounded-2xl cyan-glow uppercase text-sm transition-transform active:scale-95">PLACE ORDER</button>
                  </div>
                </form>
             </div>
@@ -274,9 +304,9 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
         )}
 
         {activeTab === 'orders' && (
-          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-             <div className="bg-white/5 border border-white/10 rounded-[3rem] overflow-hidden">
-                <table className="w-full text-left">
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 overflow-hidden">
+             <div className="bg-white/5 border border-white/10 rounded-[3rem] overflow-x-auto">
+                <table className="w-full text-left min-w-[600px]">
                    <thead>
                       <tr className="border-b border-white/5 bg-white/[0.02]">
                          <th className="px-8 py-6 text-[10px] font-black text-gray-500 uppercase tracking-widest">ID</th>
@@ -336,7 +366,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
                         <p>1. Pay the amount to our Merchant: <span className="text-white font-bold">01XXX-XXXXXX</span></p>
                         <p>2. Paste your transaction ID and click confirm.</p>
                      </div>
-                     <button onClick={handleConfirmPayment} className="w-full py-6 bg-cyan-gradient text-black font-black rounded-2xl cyan-glow uppercase tracking-widest text-sm">CONFIRM PAYMENT</button>
+                     <button onClick={handleConfirmPayment} className="w-full py-6 bg-cyan-gradient text-black font-black rounded-2xl cyan-glow uppercase tracking-widest text-sm transition-transform active:scale-95">CONFIRM PAYMENT</button>
                   </div>
                </div>
              )}
@@ -344,9 +374,9 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
         )}
 
         {activeTab === 'transactions' && (
-          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-             <div className="bg-white/5 border border-white/10 rounded-[3rem] overflow-hidden">
-                <table className="w-full text-left">
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 overflow-hidden">
+             <div className="bg-white/5 border border-white/10 rounded-[3rem] overflow-x-auto">
+                <table className="w-full text-left min-w-[600px]">
                    <thead>
                       <tr className="border-b border-white/5 bg-white/[0.02]">
                          <th className="px-8 py-6 text-[10px] font-black text-gray-500 uppercase tracking-widest">ID</th>
@@ -374,16 +404,16 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
 
         {activeTab === 'refer-earn' && (
           <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="bg-white/5 border border-white/10 rounded-[3rem] p-12 flex flex-col md:flex-row items-center gap-12">
+            <div className="bg-white/5 border border-white/10 rounded-[3rem] p-12 flex flex-col md:flex-row items-center gap-12 text-center md:text-left">
                <div className="flex-1 space-y-6">
-                  <h2 className="text-5xl font-black tracking-tighter leading-none">INVITE FRIENDS.<br/><span className="text-cyan-400">EARN ৳ 10 PER SIGNUP.</span></h2>
+                  <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">INVITE FRIENDS.<br/><span className="text-cyan-400">EARN ৳ 10 PER SIGNUP.</span></h2>
                   <p className="text-gray-400 font-medium">Earn money instantly when your friends join using your invitation code.</p>
                </div>
                <div className="w-full md:w-[400px] bg-black border border-white/10 rounded-[2.5rem] p-8 space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Your Code</label>
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-white/5 rounded-xl px-4 py-3 text-lg font-black text-cyan-400">{user.username || 'CAPTAIN'}</div>
+                      <div className="flex-1 bg-white/5 rounded-xl px-4 py-3 text-lg font-black text-cyan-400">{user.username || 'user'}</div>
                       <button onClick={handleCopy} className={`px-6 py-3 rounded-xl font-black text-xs uppercase ${copied ? 'bg-green-500 text-white' : 'bg-cyan-400 text-black hover:bg-white'}`}>{copied ? 'COPIED' : 'COPY'}</button>
                     </div>
                   </div>
@@ -398,15 +428,15 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
 
         {activeTab === 'profile' && (
           <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="bg-white/5 border border-white/10 rounded-[3rem] p-10 md:p-12">
-               <div className="flex flex-col md:flex-row gap-12 items-start">
+            <div className="bg-white/5 border border-white/10 rounded-[3rem] p-12">
+               <div className="flex flex-col md:flex-row gap-12 items-center md:items-start text-center md:text-left">
                   <div className="w-full md:w-1/3 flex flex-col items-center gap-6">
                      <div className="w-40 h-40 rounded-[3rem] bg-cyan-gradient p-1">
                         <div className="w-full h-full bg-black rounded-[inherit] flex items-center justify-center text-6xl font-black text-cyan-400 shadow-inner">
                           {user.username?.[0]?.toUpperCase() || 'U'}
                         </div>
                      </div>
-                     <div className="text-center">
+                     <div>
                         <h3 className="text-2xl font-black tracking-tighter text-white">{user.username}</h3>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Verified Member</p>
                      </div>
@@ -415,16 +445,16 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
                   <div className="flex-1 w-full space-y-10">
                      <div className="space-y-6">
                         <h4 className="text-lg font-black text-cyan-400 uppercase tracking-widest border-b border-white/5 pb-4">Personal Information</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                            <div className="space-y-2">
                               <label className="text-[10px] font-black text-gray-600 uppercase tracking-widest ml-1">Username</label>
-                              <div className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-gray-400 font-bold">
+                              <div className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-gray-400 font-bold truncate">
                                 {user.username}
                               </div>
                            </div>
                            <div className="space-y-2">
                               <label className="text-[10px] font-black text-gray-600 uppercase tracking-widest ml-1">Email Address</label>
-                              <div className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-gray-400 font-bold">
+                              <div className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-gray-400 font-bold truncate">
                                 {user.email}
                               </div>
                            </div>
@@ -432,12 +462,12 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
                      </div>
 
                      <div className="p-8 bg-cyan-400/5 border border-cyan-400/20 rounded-3xl">
-                        <div className="flex items-center justify-between">
-                           <div>
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                           <div className="text-center sm:text-left">
                               <p className="text-[10px] font-black text-cyan-400 uppercase tracking-widest mb-1">Invite & Reward</p>
                               <p className="text-xs text-gray-400 font-medium">Earn ৳ 10 for every referral.</p>
                            </div>
-                           <button onClick={handleCopy} className="px-6 py-3 bg-cyan-400 text-black font-black rounded-xl text-[10px] uppercase tracking-widest hover:bg-white transition-all">
+                           <button onClick={handleCopy} className="w-full sm:w-auto px-6 py-3 bg-cyan-400 text-black font-black rounded-xl text-[10px] uppercase tracking-widest hover:bg-white transition-all active:scale-95">
                              {copied ? 'COPIED' : 'COPY CODE'}
                            </button>
                         </div>
@@ -448,7 +478,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout }) =>
           </div>
         )}
 
-        {/* Floating WhatsApp UI for Dashboard consistent experience */}
+        {/* Floating WhatsApp UI */}
         <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end gap-4">
           <a 
             href="https://wa.me/yournumber" 
